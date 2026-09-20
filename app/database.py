@@ -2,18 +2,15 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-# 1. Read DATABASE_URL from Render environment variables
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 
-# 2. If no DATABASE_URL or pointing to local MySQL, fallback to SQLite
+# Default safely to local SQLite if no valid database URL is set
 if not DATABASE_URL or "localhost" in DATABASE_URL or "127.0.0.1" in DATABASE_URL:
     DATABASE_URL = "sqlite:///./smart_event.db"
 
-# 3. Handle Render/Heroku Postgres URL prefix quirk
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-# 4. Create Engine with safe pooling
 connect_args = {"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
 
 engine = create_engine(

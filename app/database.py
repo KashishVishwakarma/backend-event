@@ -4,9 +4,9 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 
-# Default safely to local SQLite if no valid database URL is set
+# Always use SQLite unless a full cloud postgres/mysql URL is provided
 if not DATABASE_URL or "localhost" in DATABASE_URL or "127.0.0.1" in DATABASE_URL:
-    DATABASE_URL = "sqlite:///./smart_event.db"
+    DATABASE_URL = "sqlite:///./event_system.db"
 
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
